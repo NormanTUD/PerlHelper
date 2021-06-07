@@ -10,7 +10,7 @@ This defines and exports some in my opinion useful perl functions.
 
 `warning @messages`: Prints some messages to STDERR in orange
 
-`error @messages`: Prints some messages to STDERR in red and exists
+`error @messages`: Prints some messages to STDERR in red and exits
 
 `analyze_args %options, @parameters, @ARGV`: Analyzes arguments and sets `%options` accordingly
 
