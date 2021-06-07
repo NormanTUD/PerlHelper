@@ -6,7 +6,7 @@ use warnings;
 my @modules = qw/Data::Dumper Memoize CPAN LWP::Simple URL::Encode Digest::MD5 Encode Path::Tiny Term::ANSIColor Capture::Tiny UI::Dialog/;
 use Filter::Simple;
 FILTER {
-	$_ = "no warnings; ".join("\n", map { "use $_ qw//;" } @modules )."; use warnings; use strict; \n$_";
+	$_ = "no warnings; ".join("\n", map { "use $_ qw//;" } @modules )."; use warnings; use strict; use autodie; \n$_";
 	_install_uninstalled_modules_from_string($_);
 	return $_;
 };
