@@ -27,8 +27,6 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(myget debug warning error analyze_args Dumper dd memoize program_installed sys init_dialog derror dmsg dinput url_encode url_decode md5_hex is_root);
 
-
-
 my %options = (
 	debug => 0,
 	myget_cache => '.myget_cache',
