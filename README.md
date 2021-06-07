@@ -30,6 +30,12 @@ This defines and exports some in my opinion useful perl functions.
 
 `dinput $message, $default"`: Display a whiptail input field with default value `$default`
 
+`url_encode($param)`, `url_decode($param)` de- and encodes URL parameters
+
+`md5_hex($param)`: Creates a hexadecimal md5 from `$param`
+
+`is_root()`: true if you are root, false otherwise 
+
 See `test.pl` for examples of all of those codes.
 
 # List of not-exported available functions
@@ -46,3 +52,9 @@ See `test.pl` for examples of all of those codes.
 
 `PerlHelper::die_on_error()`: Enables dieying on error
 
+# Other features
+
+When loading a module that does not exist, you will get an error message. Run the program again
+with sudo-rights and it will be installed automagically from CPAN if available.
+
+Also, you don't need to use `warnings`, `strict` and `autodie` anymore, as these are loaded automatically.

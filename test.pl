@@ -1,8 +1,4 @@
-use strict;
-use warnings;
-
 use lib '.';
-
 use PerlHelper;
 
 my %options = ();
@@ -13,7 +9,7 @@ my @parameters = (
 		regex => qr/(\d+)$/,
 		varname => "parameter",
 		value => '$1',
-		checksub => sub { my $arg = shift; error "ERROR: Value must be below 100" if $arg >= 100 }
+		checksub => sub { my $arg = shift; error "undefined variable" unless defined $arg; error "ERROR: Value must be below 100" if $arg >= 100 }
 	},
 	{ # boolean switch for -d and --debug
 		names => ["-d", "--debug"],
@@ -41,21 +37,19 @@ analyze_args %options, @parameters, @ARGV;
 #dd %options;
 
 warning "Warning";
-PerlHelper::no_die_on_error();
-error "Error";
-PerlHelper::enable_debug();
-debug "I am visible";
-myget("https://google.de");
-PerlHelper::disable_debug();
-debug "I am NOT visible";
-myget("https://google.de");
+#PerlHelper::no_die_on_error();
+#error "Error";
+#PerlHelper::enable_debug();
+#debug "I am visible";
+#myget("https://google.de");
+#PerlHelper::disable_debug();
+#debug "I am NOT visible";
+#myget("https://google.de");
 
-program_installed("ls");
-program_installed("lsasdasdas");
-
-warn Dumper sys "ls";
-
-init_dialog("", "welt");
-dmsg "hallo welt";
-dinput "hallo welt", "a";
-derror "hallo";
+#program_installed("ls");
+#program_installed("lsasdasdas");
+#warn Dumper sys "ls";
+#init_dialog("", "welt");
+#dmsg "hallo welt";
+#dinput "hallo welt", "a";
+#derror "hallo";

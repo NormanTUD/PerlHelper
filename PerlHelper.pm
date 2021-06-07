@@ -2,21 +2,32 @@ package PerlHelper;
 
 use strict;
 use warnings;
+
+my @modules = qw/Data::Dumper Memoize CPAN LWP::Simple URL::Encode Digest::MD5 Encode Path::Tiny Term::ANSIColor Capture::Tiny UI::Dialog/;
+use Filter::Simple;
+FILTER {
+	$_ = "no warnings; ".join("\n", map { "use $_ qw//;" } @modules )."; use warnings; use strict; \n$_";
+	_install_uninstalled_modules_from_string($_);
+	return $_;
+};
+
 use Data::Dumper;
 use Memoize;
-
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT = qw(myget debug warning error analyze_args Dumper dd memoize program_installed sys init_dialog derror dmsg dinput);
-
-use URL::Encode qw/url_encode/;
+use CPAN;
+use LWP::Simple qw//;
+use URL::Encode qw/url_encode url_decode/;
 use Digest::MD5 qw/md5_hex/;
-use LWP::Simple;
 use Encode;
 use Path::Tiny;
 use Term::ANSIColor;
 use Capture::Tiny ':all';
 use UI::Dialog;
+
+require Exporter;
+our @ISA = qw(Exporter);
+our @EXPORT = qw(myget debug warning error analyze_args Dumper dd memoize program_installed sys init_dialog derror dmsg dinput url_encode url_decode md5_hex is_root);
+
+
 
 my %options = (
 	debug => 0,
@@ -148,7 +159,7 @@ sub myget {
 		$page = path($cache_file)->slurp;
 	} else {
 		debug "`$cache_file` Did not exist. Getting it...";
-		$page = get($url);
+		$page = LWP::Simple::get($url);
 		if($page) {
 			open my $fh, '>', $cache_file;
 			binmode($fh, ":utf8");
@@ -295,6 +306,56 @@ sub sys ($) {
 		stderr => $stderr,
 		exit => $exit
 	};
+}
+
+sub _install_uninstalled_modules_from_string {
+	my $string = shift;
+
+	my @uninstalled_modules = _get_uninstalled_modules_from_string($string);
+
+	foreach my $module (@uninstalled_modules) {
+		if(is_root()) {
+			CPAN::Shell->install($module);
+		} else {
+			error "You must be root to install the missing module $module!";
+			exit(1);
+		}
+	}
+}
+
+sub is_root {
+	my $login = (getpwuid $>);
+	if($login eq 'root') {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+sub _get_uninstalled_modules_from_string {
+	my $string = shift;
+	my @modules = _get_modules_from_string($string);
+
+	my @uninstalled_modules = ();
+	foreach my $module (@modules) {
+		eval "use $module qw//;";
+		if($@) {
+			push @uninstalled_modules, $module;
+		}
+	}
+	return @uninstalled_modules;
+}
+
+sub _get_modules_from_string {
+	my $string = shift;
+
+	my @modules = ();
+
+	while ($string =~ m#\buse\s+([A-Za-z0-9_:]+)(\b\s*(\s+.*?))?;#gism) {
+		push @modules, $1;
+	}
+
+	return @modules;
 }
 
 1;
