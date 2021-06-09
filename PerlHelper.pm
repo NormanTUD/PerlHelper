@@ -184,18 +184,21 @@ sub analyze_args (\%\@\@){
 	my %param_names = ();
 	my %varnames = ();
 	foreach my $param (@$parameters) {
-		die "Doubly-defined varname name $param->{varname} in \@parameters\n" if(exists $varnames{$param->{varname}});
-		$varnames{$param->{varname}} = 1;
+		error "No varname specified for ".join(", ", $param->{names}) if !defined($param->{varname});
+		error "No name specified" if !defined($param->{names});
+		error "Doubly-defined varname name $param->{varname} in \@parameters\n" if(exists $varnames{$param->{varname}});
 		if(ref $param->{names} eq "ARRAY") {
 			foreach my $name (@{$param->{names}}) {
-				die "Doubly-defined parameter name $name in \@parameters\n" if(exists $param_names{$name});
+				error "Doubly-defined parameter name $name in \@parameters\n" if(exists $param_names{$name});
 				$param_names{$name} = 1;
 			}
 		} else {
 			my $name = $param->{names};
+			error "Doubly-defined parameter name $name in \@parameters\n" if(exists $param_names{$name});
 			$param_names{$name} = 1;
-			die "Doubly-defined parameter name $name in \@parameters\n" if(exists $param_names{$name});
 		}
+		error "No value defined for boolean ".join(", ", $param->{names}) if defined $param->{type} and $param->{type} eq "bool" && !defined($param->{value});
+		$varnames{$param->{varname}} = 1;
 	}
 
 	foreach my $param (@$parameters) {
@@ -210,6 +213,8 @@ sub analyze_args (\%\@\@){
 
 		if(ref $param->{names} eq "ARRAY") {
 			@names = @{$param->{names}};
+		} elsif (ref $param->{names} eq "") {
+			push @names, $param->{names};
 		} else {
 			error "Invalid type for names";
 		}

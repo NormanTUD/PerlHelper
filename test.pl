@@ -11,6 +11,12 @@ my @parameters = (
 		value => '$1',
 		checksub => sub { my $arg = shift; error "undefined variable" unless defined $arg; error "ERROR: Value must be below 100" if $arg >= 100 }
 	},
+	{ # accept string, like -s=asdasdas, and sets $options{string} to asdasdas
+		names => "-a",
+		varname => "a",
+		type => "bool",
+		value => 1
+	},
 	{ # boolean switch for -d and --debug
 		names => ["-d", "--debug"],
 		varname => "debug",
@@ -31,10 +37,16 @@ my @parameters = (
 		names => ["-s", "--string"],
 		varname => "string",
 		type => "string",
+	},
+	{ # accept string, like -s=asdasdas, and sets $options{string} to asdasdas
+		names => "-g",
+		varname => "g",
+		type => "bool",
+		value => 1
 	}
 );
 analyze_args %options, @parameters, @ARGV;
-#dd %options;
+dd %options;
 
 warning "Warning";
 PerlHelper::no_die_on_error();
