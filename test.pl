@@ -28,21 +28,10 @@ my @parameters = (
 		varname => "integer",
 		type => "int"
 	},
-	{ # accept float, like -i=10.5, and sets $options{float} to 10.5
+	{ # accept float, like -f=10.5, and sets $options{float} to 10.5
 		names => ["-f", "--float"],
 		varname => "float",
 		type => "float",
-	},
-	{ # accept string, like -s=asdasdas, and sets $options{string} to asdasdas
-		names => ["-s", "--string"],
-		varname => "string",
-		type => "string",
-	},
-	{ # accept string, like -s=asdasdas, and sets $options{string} to asdasdas
-		names => "-g",
-		varname => "g",
-		type => "bool",
-		value => 1
 	}
 );
 analyze_args %options, @parameters, @ARGV;
