@@ -34,7 +34,9 @@ my @parameters = (
 		type => "float",
 	}
 );
+
 analyze_args %options, @parameters, @ARGV;
+
 dd %options;
 
 warning "Warning";

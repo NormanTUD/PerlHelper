@@ -12,6 +12,7 @@ FILTER {
 };
 
 use Data::Dumper;
+$Data::Dumper::Deparse = 1;
 use Memoize;
 use CPAN;
 use LWP::Simple qw//;
